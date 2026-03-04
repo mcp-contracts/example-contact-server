@@ -1,0 +1,24 @@
+name: MCP Contract Check
+
+on:
+  pull_request:
+    paths:
+      - "server.js"
+      - "package.json"
+
+jobs:
+  contract-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm install
+      - name: Check MCP contract
+        uses: mcp-contracts/github-action@main
+        with:
+          baseline: contracts/baseline.mcpc.json
+          command: node
+          args: server.js
+          fail-on: breaking
