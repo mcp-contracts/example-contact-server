@@ -6,6 +6,9 @@ on:
       - "server.js"
       - "package.json"
 
+permissions:
+  pull-requests: write
+
 jobs:
   contract-check:
     runs-on: ubuntu-latest
