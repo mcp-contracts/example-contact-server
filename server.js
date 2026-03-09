@@ -12,8 +12,10 @@
  *   🟢 SAFE      get_contact — optional param "include_notes" added
  */
 
+import { createServer } from "node:http";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { z } from "zod";
 
 const server = new McpServer({
@@ -175,5 +177,29 @@ server.resource("contacts://stats", "contacts://stats", async (uri) => ({
 
 // --- Start ---
 
-const transport = new StdioServerTransport();
-await server.connect(transport);
+const httpFlagIndex = process.argv.indexOf("--http");
+
+if (httpFlagIndex !== -1) {
+  const port = Number(process.argv[httpFlagIndex + 1]) || 3000;
+  const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined });
+  await server.connect(transport);
+
+  const httpServer = createServer(async (req, res) => {
+    if (req.url === "/mcp" && (req.method === "POST" || req.method === "GET" || req.method === "DELETE")) {
+      const chunks = [];
+      for await (const chunk of req) chunks.push(chunk);
+      const body = Buffer.concat(chunks).toString();
+      const parsedBody = body ? JSON.parse(body) : undefined;
+      await transport.handleRequest(req, res, parsedBody);
+    } else {
+      res.writeHead(404).end("Not found");
+    }
+  });
+
+  httpServer.listen(port, () => {
+    console.log(`MCP server listening on http://localhost:${port}/mcp`);
+  });
+} else {
+  const transport = new StdioServerTransport();
+  await server.connect(transport);
+}
