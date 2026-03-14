@@ -20,9 +20,27 @@ This repo has a simple MCP server (`server.js`) with a baseline contract snapsho
 
 ## Running locally
 
+### Stdio (default)
+
 ```bash
 npm install
 npm start
 ```
 
 The server communicates over stdio using the MCP protocol.
+
+### HTTP transport
+
+```bash
+npm run start:http
+# or with a custom port:
+node server.js --http 8080
+```
+
+The server listens on `http://localhost:3000/mcp` (default port 3000) using MCP Streamable HTTP transport.
+
+You can then diff against it with the CLI:
+
+```bash
+npx mcpdiff diff --live contracts/baseline.mcpc.json --url http://localhost:3000/mcp
+```
