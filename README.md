@@ -1,15 +1,21 @@
 # Example Contact Server
 
-A minimal MCP server demonstrating the [mcp-contracts GitHub Action](https://github.com/mcp-contracts/github-action).
+A minimal MCP server demonstrating [mcp-contracts](https://github.com/mcp-contracts/mcp-contracts) — the GitHub Action for schema diffing and the `@mcp-contracts/test` library for contract testing.
 
 ## What this repo demonstrates
 
-This repo has a simple MCP server (`server.js`) with a baseline contract snapshot in `contracts/baseline.mcpc.json`. When a pull request modifies `server.js`, the GitHub Action automatically:
+This repo has a simple MCP server (`server.js`) with a baseline contract snapshot in `contracts/baseline.mcpc.json`. Two CI workflows run on pull requests:
 
+**Schema Diff** (GitHub Action) — automatically:
 1. Captures the current MCP tool schemas from the server
 2. Diffs them against the baseline snapshot
 3. Posts a PR comment with the diff report
 4. Fails the check if breaking changes are detected
+
+**Contract Tests** (`@mcp-contracts/test`) — automatically:
+1. Verifies server schemas conform to the contract
+2. Tests boundary inputs (empty strings, zero values, oversized payloads)
+3. Runs behavioral assertions on tool outputs
 
 ## Try it yourself
 
@@ -43,4 +49,23 @@ You can then diff against it with the CLI:
 
 ```bash
 npx mcpdiff diff --live contracts/baseline.mcpc.json --url http://localhost:3000/mcp
+```
+
+## Contract testing
+
+Run contract conformance tests with:
+
+```bash
+npm test
+```
+
+This runs `contract.test.js` which uses `@mcp-contracts/test` to:
+- Verify all tool schemas match the contract
+- Send boundary inputs (empty strings, zero values, etc.) and verify graceful handling
+- Run behavioral assertions on tool outputs
+
+You can also run the CLI directly:
+
+```bash
+npx mcp-test run contracts/baseline.mcpc.json --command "node server.js"
 ```
