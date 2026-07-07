@@ -69,3 +69,25 @@ You can also run the CLI directly:
 ```bash
 npx mcp-test run contracts/baseline.mcpc.json --command "node server.js"
 ```
+
+## Multi-server composition
+
+This repo also includes a second server, `notes-server.js`, plus an `mcp.json`
+composition to demonstrate mcpdiff's multi-server features (v0.6.0). The notes
+server deliberately exposes a `search_contacts` tool with a different schema
+than the contacts server — a conflicting tool name collision.
+
+```bash
+# Snapshot every server in the composition (one .mcpc.json per server)
+npx mcpdiff snapshot --config mcp.json --all --out-dir contracts/composition
+
+# Diff all servers against their baselines in one report
+npx mcpdiff diff --config mcp.json --baseline contracts/composition
+
+# Detect the deliberate search_contacts collision (exits 1)
+npx mcpdiff check-conflicts --config mcp.json
+
+# Render the composition as a dependency graph
+npx mcpdiff graph --config mcp.json
+npx mcpdiff --format mermaid graph --config mcp.json
+```

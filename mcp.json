@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "contacts": {
+      "command": "node",
+      "args": [
+        "server.js"
+      ]
+    },
+    "notes": {
+      "command": "node",
+      "args": [
+        "notes-server.js"
+      ]
+    }
+  }
+}

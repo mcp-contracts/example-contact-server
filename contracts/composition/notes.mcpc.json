@@ -1,0 +1,80 @@
+{
+  "snapshotVersion": "1.0.0",
+  "capturedAt": "2026-07-07T15:59:56.081Z",
+  "contentHash": "sha256:4815795f2baf9de982acc21a3f5c17cbd74c17bb64f9cf6e23d85131529997da",
+  "server": {
+    "name": "notes-server",
+    "version": "1.0.0",
+    "protocolVersion": "2025-11-25",
+    "capabilities": {
+      "tools": {
+        "listChanged": true
+      }
+    }
+  },
+  "capture": {
+    "transport": "stdio",
+    "source": "node notes-server.js",
+    "tool": "mcpdiff/0.1.0"
+  },
+  "tools": {
+    "search_contacts": {
+      "description": "Search notes for mentions of a contact",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "contact_name": {
+            "type": "string",
+            "description": "Contact name to search notes for"
+          }
+        },
+        "required": [
+          "contact_name"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    "add_note": {
+      "description": "Attach a note to a contact",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "contact_id": {
+            "type": "string",
+            "description": "The contact's unique identifier"
+          },
+          "text": {
+            "type": "string",
+            "description": "Note text"
+          }
+        },
+        "required": [
+          "contact_id",
+          "text"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    "list_notes": {
+      "description": "List all notes for a contact",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "contact_id": {
+            "type": "string",
+            "description": "The contact's unique identifier"
+          }
+        },
+        "required": [
+          "contact_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    }
+  },
+  "resources": {},
+  "prompts": {}
+}
