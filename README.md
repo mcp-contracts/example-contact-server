@@ -24,6 +24,18 @@ This repo has a simple MCP server (`server.js`) with a baseline contract snapsho
 3. Open a pull request
 4. Watch the MCP Contract Check workflow run and report changes
 
+## Project config
+
+This repo ships an [`mcpcontracts.json`](./mcpcontracts.json) so the mcpdiff commands need no flags — it points at the `contacts` server from `mcp.json` and the committed baseline:
+
+```bash
+npx mcpdiff check             # capture the live server, compare to the baseline
+npx mcpdiff check --watch     # re-check on every file change
+npx mcpdiff update            # refresh the committed baseline
+```
+
+Explicit flags always win over the config file (e.g. `--url http://localhost:3000/mcp` to check the HTTP variant instead).
+
 ## Running locally
 
 ### Stdio (default)
@@ -45,10 +57,10 @@ node server.js --http 8080
 
 The server listens on `http://localhost:3000/mcp` (default port 3000) using MCP Streamable HTTP transport.
 
-You can then diff against it with the CLI:
+You can then check it against the baseline with the CLI (the --url flag overrides the stdio server from mcpcontracts.json):
 
 ```bash
-npx mcpdiff diff --live contracts/baseline.mcpc.json --url http://localhost:3000/mcp
+npx mcpdiff check --url http://localhost:3000/mcp
 ```
 
 ## Contract testing
