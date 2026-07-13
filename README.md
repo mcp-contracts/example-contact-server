@@ -29,9 +29,9 @@ This repo has a simple MCP server (`server.js`) with a baseline contract snapsho
 This repo ships an [`mcpcontracts.json`](./mcpcontracts.json) so the mcpdiff commands need no flags — it points at the `contacts` server from `mcp.json` and the committed baseline:
 
 ```bash
-npx mcpdiff baseline verify   # capture the live server, compare to the baseline
-npx mcpdiff ci                # same, with CI-friendly output and exit codes
-npx mcpdiff watch             # re-diff on every file change
+npx mcpdiff check             # capture the live server, compare to the baseline
+npx mcpdiff check --watch     # re-check on every file change
+npx mcpdiff update            # refresh the committed baseline
 ```
 
 Explicit flags always win over the config file (e.g. `--url http://localhost:3000/mcp` to check the HTTP variant instead).
