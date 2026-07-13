@@ -1,0 +1,8 @@
+{
+  "server": {
+    "config": "./mcp.json",
+    "name": "contacts"
+  },
+  "baseline": "contracts/baseline.mcpc.json",
+  "failOn": "breaking"
+}
