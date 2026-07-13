@@ -57,10 +57,10 @@ node server.js --http 8080
 
 The server listens on `http://localhost:3000/mcp` (default port 3000) using MCP Streamable HTTP transport.
 
-You can then diff against it with the CLI:
+You can then check it against the baseline with the CLI (the --url flag overrides the stdio server from mcpcontracts.json):
 
 ```bash
-npx mcpdiff diff --live contracts/baseline.mcpc.json --url http://localhost:3000/mcp
+npx mcpdiff check --url http://localhost:3000/mcp
 ```
 
 ## Contract testing
