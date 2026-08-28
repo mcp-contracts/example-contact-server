@@ -6,14 +6,16 @@
     "start": "node server.js",
     "start:http": "node server.js --http",
     "test": "vitest run",
-    "test:contract": "mcp-test run contracts/baseline.mcpc.json --command 'node server.js'"
+    "test:contract": "mcp-test run contracts/baseline.mcpc.json --command 'node server.js'",
+    "demo": "bash demo.sh"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.27.1",
     "zod": "^3.24.0"
   },
   "devDependencies": {
-    "@mcp-contracts/test": "^0.5.0",
+    "@mcp-contracts/cli": "^0.7.3",
+    "@mcp-contracts/test": "^0.7.3",
     "vitest": "^4.1.0"
   }
 }
