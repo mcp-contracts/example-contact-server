@@ -5,6 +5,10 @@ on:
     paths:
       - "server.js"
       - "package.json"
+      - "mcpcontracts.json"
+      - "mcp.json"
+      - "contracts/baseline.mcpc.json"
+      - ".github/workflows/mcp-contract-check.yml"
 
 permissions:
   pull-requests: write
@@ -18,10 +22,6 @@ jobs:
         with:
           node-version: "22"
       - run: npm install
+      # Zero-config: server, baseline, and fail-on come from mcpcontracts.json
       - name: Check MCP contract
         uses: mcp-contracts/github-action@main
-        with:
-          baseline: contracts/baseline.mcpc.json
-          command: node
-          args: server.js
-          fail-on: breaking
