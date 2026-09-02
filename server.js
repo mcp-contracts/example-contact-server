@@ -14,6 +14,7 @@
 
 import { createServer } from "node:http";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { z } from "zod";
@@ -189,9 +190,62 @@ function createContactsServer() {
 
 // --- Start ---
 
-const httpFlagIndex = process.argv.indexOf("--http");
+// With MCP_TOKEN set, HTTP/SSE requests must carry "Authorization: Bearer <token>".
+const AUTH_TOKEN = process.env.MCP_TOKEN;
 
-if (httpFlagIndex !== -1) {
+function authorized(req, res) {
+  if (!AUTH_TOKEN || req.headers.authorization === `Bearer ${AUTH_TOKEN}`) {
+    return true;
+  }
+  res.writeHead(401).end("Unauthorized");
+  return false;
+}
+
+const httpFlagIndex = process.argv.indexOf("--http");
+const sseFlagIndex = process.argv.indexOf("--sse");
+
+if (sseFlagIndex !== -1) {
+  const port = Number(process.argv[sseFlagIndex + 1]) || 3001;
+
+  // SSE is session-based: GET /sse opens the event stream, and the client
+  // POSTs its messages to /messages?sessionId=... on the same transport.
+  const transports = new Map();
+  const httpServer = createServer(async (req, res) => {
+    try {
+      if (req.method === "GET" && req.url === "/sse") {
+        if (!authorized(req, res)) return;
+        const server = createContactsServer();
+        const transport = new SSEServerTransport("/messages", res);
+        transports.set(transport.sessionId, transport);
+        res.on("close", () => {
+          transports.delete(transport.sessionId);
+          server.close();
+        });
+        await server.connect(transport);
+      } else if (req.method === "POST" && req.url?.startsWith("/messages")) {
+        if (!authorized(req, res)) return;
+        const sessionId = new URL(req.url, "http://localhost").searchParams.get("sessionId");
+        const transport = sessionId ? transports.get(sessionId) : undefined;
+        if (!transport) {
+          res.writeHead(400).end("Unknown session");
+          return;
+        }
+        await transport.handlePostMessage(req, res);
+      } else {
+        res.writeHead(404).end("Not found");
+      }
+    } catch (err) {
+      console.error("Request handling error:", err);
+      if (!res.headersSent) {
+        res.writeHead(500).end("Internal error");
+      }
+    }
+  });
+
+  httpServer.listen(port, () => {
+    console.log(`MCP server (SSE) listening on http://localhost:${port}/sse`);
+  });
+} else if (httpFlagIndex !== -1) {
   const port = Number(process.argv[httpFlagIndex + 1]) || 3000;
 
   // Stateless mode: every request gets its own server + transport pair.
@@ -199,6 +253,7 @@ if (httpFlagIndex !== -1) {
   // request (the SDK rejects re-initialization on a used transport).
   const httpServer = createServer(async (req, res) => {
     if (req.url === "/mcp" && (req.method === "POST" || req.method === "GET" || req.method === "DELETE")) {
+      if (!authorized(req, res)) return;
       try {
         const chunks = [];
         for await (const chunk of req) chunks.push(chunk);

@@ -159,17 +159,27 @@ npx mcpdiff check --watch --webhook http://localhost:8080/webhook
 
 ## Remote servers (SSE & custom headers)
 
-The CLI can talk to remote MCP servers over SSE, with repeatable `--header` flags for authentication:
+The CLI can talk to remote MCP servers over SSE, with repeatable `--header` flags for authentication. This repo's server can run in SSE mode itself, with an optional bearer token, so you can try the whole flow locally:
 
 ```bash
-# Snapshot a remote SSE server
+# Start the server in SSE mode with auth required
+MCP_TOKEN=secret npm run start:sse
+# → listening on http://localhost:3001/sse
+
+# Check it against the committed baseline (in another terminal)
+npx mcpdiff check --url http://localhost:3001/sse --sse \
+  --header "Authorization: Bearer secret"
+
+# Without the header the server responds 401 and the check fails
+npx mcpdiff check --url http://localhost:3001/sse --sse
+```
+
+`MCP_TOKEN` also guards the HTTP transport (`npm run start:http`). Leave it unset to run without authentication. The same flags work against any deployed SSE server:
+
+```bash
 npx mcpdiff snapshot --url https://mcp.example.com/sse --sse \
   --header "Authorization: Bearer $TOKEN" \
   --header "X-Custom: value"
-
-# Check a deployed server against the committed baseline
-npx mcpdiff check --url https://mcp.example.com/sse --sse \
-  --header "Authorization: Bearer $TOKEN"
 ```
 
 ## Snapshot integrity & signing
