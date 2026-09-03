@@ -15,8 +15,8 @@
     "zod": "^3.24.0"
   },
   "devDependencies": {
-    "@mcp-contracts/cli": "^0.7.3",
-    "@mcp-contracts/test": "^0.7.3",
+    "@mcp-contracts/cli": "^0.8.0",
+    "@mcp-contracts/test": "^0.8.0",
     "vitest": "^4.1.0"
   }
 }
