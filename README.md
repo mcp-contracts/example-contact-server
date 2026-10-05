@@ -116,7 +116,7 @@ This runs `contract.test.js` which uses `@mcp-contracts/test` to:
 You can also run the CLI directly:
 
 ```bash
-npx mcpdiff test contracts/baseline.mcpc.json --command "node server.js"
+npx mcp-test run contracts/baseline.mcpc.json --command "node server.js"
 ```
 
 ## Multi-server composition
