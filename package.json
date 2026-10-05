@@ -7,7 +7,7 @@
     "start:http": "node server.js --http",
     "start:sse": "node server.js --sse",
     "test": "vitest run",
-    "test:contract": "mcpdiff test contracts/baseline.mcpc.json --command 'node server.js'",
+    "test:contract": "mcp-test run contracts/baseline.mcpc.json --command 'node server.js'",
     "demo": "bash demo.sh"
   },
   "dependencies": {
