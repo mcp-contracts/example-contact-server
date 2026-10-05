@@ -18,5 +18,10 @@
     "@mcp-contracts/cli": "^0.8.1",
     "@mcp-contracts/test": "^0.8.1",
     "vitest": "^4.1.0"
+  },
+  "overrides": {
+    "hono": "^4.13.7",
+    "fast-uri": "^3.1.8",
+    "ip-address": "^10.7.1"
   }
 }
