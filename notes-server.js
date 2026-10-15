@@ -17,34 +17,40 @@ const server = new McpServer({
 });
 
 // ⚠ Collides with contacts-server's search_contacts — different schema
-server.tool(
+server.registerTool(
   "search_contacts",
-  "Search notes for mentions of a contact",
   {
-    contact_name: z.string().describe("Contact name to search notes for"),
+    description: "Search notes for mentions of a contact",
+    inputSchema: z.strictObject({
+      contact_name: z.string().describe("Contact name to search notes for"),
+    }),
   },
   async ({ contact_name }) => ({
     content: [{ type: "text", text: JSON.stringify({ contact_name, notes: [] }) }],
   }),
 );
 
-server.tool(
+server.registerTool(
   "add_note",
-  "Attach a note to a contact",
   {
-    contact_id: z.string().describe("The contact's unique identifier"),
-    text: z.string().describe("Note text"),
+    description: "Attach a note to a contact",
+    inputSchema: z.strictObject({
+      contact_id: z.string().describe("The contact's unique identifier"),
+      text: z.string().describe("Note text"),
+    }),
   },
   async ({ contact_id, text }) => ({
     content: [{ type: "text", text: JSON.stringify({ contact_id, text, saved: true }) }],
   }),
 );
 
-server.tool(
+server.registerTool(
   "list_notes",
-  "List all notes for a contact",
   {
-    contact_id: z.string().describe("The contact's unique identifier"),
+    description: "List all notes for a contact",
+    inputSchema: z.strictObject({
+      contact_id: z.string().describe("The contact's unique identifier"),
+    }),
   },
   async ({ contact_id }) => ({
     content: [{ type: "text", text: JSON.stringify({ contact_id, notes: [] }) }],
