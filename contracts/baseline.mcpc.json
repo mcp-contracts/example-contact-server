@@ -1,7 +1,7 @@
 {
   "snapshotVersion": "1.0.0",
-  "capturedAt": "2026-03-14T14:58:06.695Z",
-  "contentHash": "sha256:5dc023b3fc8d65b8876128cae45731ef4df91ebe6a14514264fcdd066d637e51",
+  "capturedAt": "2026-10-22T17:09:18.051Z",
+  "contentHash": "sha256:74d8085624ca72fe87f21405aaf285132c15413244285a7ac6f7439cf86add9f",
   "server": {
     "name": "contacts-server",
     "version": "2.0.0",
@@ -33,6 +33,7 @@
           "email": {
             "type": "string",
             "format": "email",
+            "pattern": "^(?:[A-Za-z0-9_'+\\-]+\\.)*[A-Za-z0-9_'+\\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$",
             "description": "Email address"
           },
           "phone": {
@@ -40,8 +41,8 @@
             "description": "Phone number with country code (e.g., +1-555-0100)"
           },
           "company": {
-            "type": "string",
-            "description": "Company or organization name"
+            "description": "Company or organization name",
+            "type": "string"
           }
         },
         "required": [
@@ -49,8 +50,8 @@
           "email",
           "phone"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
       }
     },
     "get_contact": {
@@ -63,16 +64,16 @@
             "description": "The contact's unique identifier (e.g., c_001)"
           },
           "include_notes": {
-            "type": "boolean",
+            "description": "Include private notes in response",
             "default": false,
-            "description": "Include private notes in response"
+            "type": "boolean"
           }
         },
         "required": [
           "id"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
       }
     },
     "search_contacts": {
@@ -85,18 +86,18 @@
             "description": "Search query to match against contact fields"
           },
           "limit": {
+            "default": 10,
+            "description": "Maximum number of results",
             "type": "integer",
             "minimum": 1,
-            "maximum": 100,
-            "default": 10,
-            "description": "Maximum number of results"
+            "maximum": 100
           }
         },
         "required": [
           "query"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
       }
     },
     "update_contact": {
@@ -109,24 +110,25 @@
             "description": "The contact's unique identifier"
           },
           "name": {
-            "type": "string",
-            "description": "Updated full name"
+            "description": "Updated full name",
+            "type": "string"
           },
           "email": {
+            "description": "Updated email address",
             "type": "string",
             "format": "email",
-            "description": "Updated email address"
+            "pattern": "^(?:[A-Za-z0-9_'+\\-]+\\.)*[A-Za-z0-9_'+\\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
           },
           "company": {
-            "type": "string",
-            "description": "Updated company name"
+            "description": "Updated company name",
+            "type": "string"
           }
         },
         "required": [
           "id"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
       }
     },
     "export_contacts": {
@@ -135,22 +137,22 @@
         "type": "object",
         "properties": {
           "format": {
+            "default": "json",
+            "description": "Export format",
             "type": "string",
             "enum": [
               "csv",
               "json"
-            ],
-            "default": "json",
-            "description": "Export format"
+            ]
           },
           "include_archived": {
-            "type": "boolean",
+            "description": "Include archived contacts",
             "default": false,
-            "description": "Include archived contacts"
+            "type": "boolean"
           }
         },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
       }
     }
   },
